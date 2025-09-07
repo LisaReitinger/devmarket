@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Page Not Found - DevMarket{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 py-12 text-center">
+    <div class="max-w-md mx-auto">
+        <div class="mb-8">
+            <h1 class="text-9xl font-bold text-gray-300 mb-4">404</h1>
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Page Not Found</h2>
+            <p class="text-gray-600 mb-8">
+                Sorry, we couldn't find the page you're looking for. It might have been moved, deleted, or you entered the wrong URL.
+            </p>
+        </div>
+        <div class="space-y-4">
+            <a href="/" class="block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-200">
+                Go Home
+            </a>
+            <a href="#" class="block border border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-50 transition duration-200">
+                Browse Products
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

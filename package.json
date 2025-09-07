@@ -1,0 +1,29 @@
+{
+  "name": "devmarket",
+  "version": "1.0.0",
+  "description": "Full-stack digital product marketplace built with Django",
+  "main": "index.js",
+  "scripts": {
+    "build-css": "npx tailwindcss -i ./static/css/input.css -o ./static/css/output.css --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LisaReitinger/devmarket.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/LisaReitinger/devmarket/issues"
+  },
+  "homepage": "https://github.com/LisaReitinger/devmarket#readme",
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.13",
+    "autoprefixer": "^10.4.21",
+    "flowbite": "^3.1.2",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.13"
+  }
+}
