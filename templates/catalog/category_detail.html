@@ -1,0 +1,219 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ category.name }} - DevMarket{% endblock %}
+
+{% block content %}
+<!-- Category Header Section -->
+<section class="bg-gradient-to-br from-blue-600 to-blue-800 text-white py-16">
+    <div class="container mx-auto px-6">
+        <!-- Breadcrumb -->
+        <nav class="flex mb-8" aria-label="Breadcrumb">
+            <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                <li class="inline-flex items-center">
+                    <a href="{% url 'pages:home' %}" class="text-blue-200 hover:text-white text-sm font-medium">
+                        Home
+                    </a>
+                </li>
+                <li aria-current="page">
+                    <div class="flex items-center">
+                        <svg class="w-4 h-4 text-blue-300" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span class="ml-1 text-blue-100 text-sm font-medium">{{ category.name }}</span>
+                    </div>
+                </li>
+            </ol>
+        </nav>
+
+        <!-- Category Info -->
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-4xl lg:text-5xl font-bold mb-4">{{ category.name }}</h1>
+                <p class="text-xl text-blue-100 mb-6 max-w-2xl">
+                    {% if category.description %}
+                        {{ category.description }}
+                    {% else %}
+                        Discover amazing {{ category.name|lower }} products created by talented professionals.
+                    {% endif %}
+                </p>
+                <div class="flex items-center text-blue-200">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"/>
+                    </svg>
+                    {{ products|length }} product{{ products|length|pluralize }} available
+                </div>
+            </div>
+            
+            <!-- Category Icon -->
+            <div class="hidden lg:block">
+                <div class="w-32 h-32 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+                    {% if category.icon %}
+                        <i class="{{ category.icon }} text-6xl text-white"></i>
+                    {% else %}
+                        <svg class="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M2 6a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14 10a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2v-6a2 2 0 00-2-2h-2zM4 10a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2v-6a2 2 0 00-2-2H4z"/>
+                        </svg>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Products Section -->
+<section class="py-16 bg-white">
+    <div class="container mx-auto px-6">
+        <!-- Filters and Sorting -->
+        <div class="flex flex-col sm:flex-row justify-between items-center mb-12">
+            <div class="mb-4 sm:mb-0">
+                <h2 class="text-2xl font-bold text-gray-900">
+                    All {{ category.name }} Products
+                </h2>
+                <p class="text-gray-600">{{ products|length }} product{{ products|length|pluralize }} found</p>
+            </div>
+            
+            <!-- Sort Options -->
+            <div class="flex items-center space-x-4">
+                <label for="sort" class="text-sm font-medium text-gray-700">Sort by:</label>
+                <select id="sort" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500">
+                    <option value="newest">Newest First</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                    <option value="popular">Most Popular</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Products Grid -->
+        {% if products %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            {% for product in products %}
+            <div class="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group border border-gray-100">
+                <!-- Product Image -->
+                <div class="relative h-56 bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
+                    {% if product.featured_image %}
+                        <img src="{{ product.featured_image.url }}" alt="{{ product.title }}" 
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    {% else %}
+                        <div class="text-center">
+                            <svg class="w-16 h-16 text-blue-400 mx-auto mb-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"/>
+                            </svg>
+                            <p class="text-blue-600 font-semibold text-sm">{{ product.file_format|default:"Digital Product" }}</p>
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Featured Badge -->
+                    {% if product.is_featured %}
+                    <div class="absolute top-3 left-3">
+                        <span class="bg-yellow-400 text-yellow-900 px-2 py-1 rounded-full text-xs font-bold">
+                            Featured
+                        </span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Product Info -->
+                <div class="p-6">
+                    <!-- Category Badge -->
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-sm font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
+                            {{ product.category.name }}
+                        </span>
+                        <span class="text-sm text-gray-500">{{ product.file_format|default:"Digital" }}</span>
+                    </div>
+
+                    <!-- Product Title -->
+                    <h3 class="text-xl font-bold text-gray-900 mb-3 line-clamp-2">{{ product.title }}</h3>
+                    
+                    <!-- Product Description -->
+                    <p class="text-gray-600 mb-4 line-clamp-2 leading-relaxed">
+                        {{ product.short_description|default:product.description|truncatewords:15 }}
+                    </p>
+
+                    <!-- Seller and Stats -->
+                    <div class="flex items-center justify-between mb-4 text-sm text-gray-500">
+                        <span>by <span class="font-semibold text-gray-700">{{ product.seller.username }}</span></span>
+                        <div class="flex items-center space-x-3">
+                            <span>{{ product.download_count }} downloads</span>
+                        </div>
+                    </div>
+
+                    <!-- Price and Action -->
+                    <div class="flex items-center justify-between">
+                        <div class="text-2xl font-bold text-gray-900">
+                            ${{ product.price }}
+                        </div>
+                        <a href="{% url 'catalog:product_detail' product.slug %}" 
+                           class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-all duration-200 font-semibold hover:shadow-lg">
+                            View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Load More Button (for future pagination) -->
+        {% if products|length >= 12 %}
+        <div class="text-center mt-12">
+            <button class="bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-3 px-8 rounded-lg transition-colors">
+                Load More Products
+            </button>
+        </div>
+        {% endif %}
+
+        {% else %}
+        <!-- Empty State -->
+        <div class="text-center py-16">
+            <svg class="w-24 h-24 text-gray-300 mx-auto mb-6" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"/>
+            </svg>
+            <h3 class="text-2xl font-bold text-gray-900 mb-4">No Products Yet</h3>
+            <p class="text-gray-600 mb-8 max-w-md mx-auto">
+                We don't have any {{ category.name|lower }} products available right now. 
+                Check back soon or explore other categories!
+            </p>
+            <a href="{% url 'pages:home' %}" 
+               class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors">
+                Browse All Categories
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Subcategories (if any) -->
+{% if subcategories %}
+<section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-6">
+        <h2 class="text-3xl font-bold text-gray-900 mb-8">Explore Subcategories</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for subcategory in subcategories %}
+            <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 text-center border border-gray-100">
+                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    {% if subcategory.icon %}
+                        <i class="{{ subcategory.icon }} text-2xl text-blue-600"></i>
+                    {% else %}
+                        <svg class="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M2 6a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14 10a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2v-6a2 2 0 00-2-2h-2zM4 10a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2v-6a2 2 0 00-2-2H4z"/>
+                        </svg>
+                    {% endif %}
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">{{ subcategory.name }}</h3>
+                <p class="text-gray-600 mb-4">{{ subcategory.description|default:"Explore this subcategory" }}</p>
+                <div class="text-sm text-blue-600 font-semibold mb-4">
+                    {{ subcategory.get_product_count }} Products
+                </div>
+                <a href="{% url 'catalog:category_detail' subcategory.slug %}" 
+                   class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors">
+                    Explore →
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}
