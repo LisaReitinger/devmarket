@@ -26,4 +26,26 @@
   .card {
     @apply bg-white shadow-lg rounded-lg p-6 border border-gray-200;
   }
+  
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .aspect-w-16 {
+    position: relative;
+    padding-bottom: 75%; /* 16:12 aspect ratio */
+  }
+  
+  .aspect-h-12 {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
 }

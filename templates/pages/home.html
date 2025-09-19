@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}DevMarket - Digital Product Marketplace{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="bg-gradient-to-br from-blue-900 to-blue-700 text-white min-h-[600px] flex items-center">
+    <div class="container mx-auto px-6 py-20">
+        <div class="flex flex-col lg:flex-row items-center justify-between">
+            <div class="lg:w-1/2 mb-12 lg:mb-0">
+                <h1 class="text-5xl lg:text-7xl font-bold mb-6 leading-tight text-white">
+                    Discover Premium <span class="text-blue-200">Digital Products</span>
+                </h1>
+                <p class="text-xl mb-8 text-blue-100 leading-relaxed max-w-lg">
+                    Find high-quality templates, UI kits, and digital assets created by talented designers and developers.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 mb-8">
+                    <a href="#categories" class="bg-white text-blue-700 hover:bg-blue-50 px-8 py-4 rounded-lg font-bold text-lg transition-all duration-200 text-center shadow-lg hover:shadow-xl">
+                        Explore Products
+                    </a>
+                    <a href="#featured" class="border-2 border-white text-white hover:bg-white hover:text-blue-700 px-8 py-4 rounded-lg font-bold text-lg transition-all duration-200 text-center">
+                        View Featured
+                    </a>
+                </div>
+                <div class="flex items-center gap-8 text-blue-200">
+                    <div class="text-center">
+                        <span class="block text-3xl font-bold text-white">{{ total_products }}</span>
+                        <span class="text-sm">Digital Products</span>
+                    </div>
+                    <div class="text-center">
+                        <span class="block text-3xl font-bold text-white">{{ total_categories }}</span>
+                        <span class="text-sm">Categories</span>
+                    </div>
+                    <div class="text-center">
+                        <span class="block text-3xl font-bold text-white">500+</span>
+                        <span class="text-sm">Happy Customers</span>
+                    </div>
+                </div>
+            </div>
+            <div class="lg:w-1/2 flex justify-center">
+                <div class="relative">
+                    <div class="w-96 h-96 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm shadow-2xl">
+                        <svg class="w-40 h-40 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Categories Section -->
+<section id="categories" class="py-20 bg-white">
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+                Browse by Category
+            </h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                Discover amazing digital products across different categories, all created by talented professionals.
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for category in top_categories %}
+            <div class="group bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-8 text-center border border-gray-100 hover:border-blue-200">
+                <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-blue-200 transition-all duration-300 group-hover:scale-110">
+                    {% if category.icon %}
+                        <i class="{{ category.icon }} text-3xl text-blue-600"></i>
+                    {% else %}
+                        <svg class="w-10 h-10 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M2 6a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14 10a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2v-6a2 2 0 00-2-2h-2zM4 10a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2v-6a2 2 0 00-2-2H4z"/>
+                        </svg>
+                    {% endif %}
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">{{ category.name }}</h3>
+                <p class="text-gray-600 mb-6 leading-relaxed">{{ category.description|default:"Explore our collection of premium digital products." }}</p>
+                <div class="text-lg text-blue-600 font-bold mb-4">
+                    {{ category.get_product_count }} Products
+                </div>
+                <a href="#" class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 hover:shadow-lg">
+                    Browse {{ category.name }} →
+                </a>
+            </div>
+            {% empty %}
+            <div class="col-span-full text-center py-12">
+                <p class="text-gray-500 text-xl">No categories available yet.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products Section -->
+<section id="featured" class="py-20 bg-gray-50">
+    <div class="container mx-auto px-6">
+        <div class="flex justify-between items-center mb-16">
+            <div>
+                <h2 class="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+                    Featured Products
+                </h2>
+                <p class="text-xl text-gray-600">
+                    Hand-picked premium products from top creators
+                </p>
+            </div>
+            <a href="#" class="hidden md:block bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg transition-all font-bold text-lg shadow-lg hover:shadow-xl">
+                View All Products
+            </a>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for product in featured_products %}
+            <div class="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group border border-gray-100">
+                <div class="relative h-56 bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
+                    {% if product.featured_image %}
+                        <img src="{{ product.featured_image.url }}" alt="{{ product.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    {% else %}
+                        <div class="text-center">
+                            <svg class="w-16 h-16 text-blue-400 mx-auto mb-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"/>
+                            </svg>
+                            <p class="text-blue-600 font-semibold">{{ product.file_format|default:"Digital Product" }}</p>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-sm font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
+                            {{ product.category.name }}
+                        </span>
+                        <span class="text-sm text-gray-500">{{ product.file_format|default:"Digital" }}</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3 line-clamp-2">{{ product.title }}</h3>
+                    <p class="text-gray-600 mb-4 line-clamp-2 leading-relaxed">{{ product.short_description|default:product.description|truncatewords:15 }}</p>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center text-sm text-gray-500">
+                            <span>by <span class="font-semibold text-gray-700">{{ product.seller.username }}</span></span>
+                        </div>
+                        <div class="text-2xl font-bold text-gray-900">
+                            ${{ product.price }}
+                        </div>
+                    </div>
+                    <a href="#" class="block w-full bg-blue-600 hover:bg-blue-700 text-white text-center py-3 rounded-lg transition-all duration-200 font-semibold hover:shadow-lg">
+                        View Details
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-full text-center py-16">
+                <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <p class="text-gray-500 text-xl">No featured products available yet.</p>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Mobile View All Button -->
+        <div class="text-center mt-8 md:hidden">
+            <a href="#" class="btn-secondary bg-primary-600 hover:bg-primary-700 text-white px-6 py-2 rounded-lg transition-colors">
+                View All Products
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="py-16 bg-gray-900 text-white">
+    <div class="container mx-auto px-6 text-center">
+        <div class="max-w-2xl mx-auto">
+            <h2 class="text-3xl font-bold mb-4">Stay Updated</h2>
+            <p class="text-gray-300 mb-8">
+                Get notified about new products, special offers, and exclusive deals from top creators.
+            </p>
+            <form class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+                <input 
+                    type="email" 
+                    placeholder="Enter your email address" 
+                    class="flex-1 px-4 py-3 rounded-lg border border-gray-600 bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:border-primary-500"
+                    required
+                >
+                <button type="submit" class="bg-primary-600 hover:bg-primary-700 px-6 py-3 rounded-lg font-medium transition-colors">
+                    Subscribe
+                </button>
+            </form>
+            <p class="text-xs text-gray-400 mt-4">
+                We respect your privacy. No spam, unsubscribe anytime.
+            </p>
+        </div>
+    </div>
+</section>
+{% endblock %}
