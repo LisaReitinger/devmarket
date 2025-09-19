@@ -74,8 +74,10 @@
                                 <div class="py-1">
                                     <a href="{% url 'accounts:profile' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
                                     {% if user.profile.is_seller or user.profile.is_admin %}
-                                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Products</a>
-                                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Add Product</a>
+                                        <a href="{% url 'dashboard:home' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Dashboard</a>
+                                        <a href="{% url 'dashboard:product_list' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Products</a>
+                                        <a href="{% url 'dashboard:product_add' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Add Product</a>
+                                        <a href="{% url 'dashboard:analytics' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Analytics</a>
                                     {% endif %}
                                     <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Purchases</a>
                                     <hr class="my-1">

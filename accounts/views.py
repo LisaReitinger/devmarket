@@ -83,7 +83,7 @@ def profile_view(request):
     # purchased_products = []
     
     # Get user's products if they're a seller
-    if profile.is_seller() or profile.is_admin():
+    if profile.is_seller or profile.is_admin:
         from catalog.models import Product
         user_products = Product.objects.filter(seller=user).order_by('-created_at')[:5]
     else:
