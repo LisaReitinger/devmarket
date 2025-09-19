@@ -142,7 +142,7 @@
                             ${{ product.price }}
                         </div>
                     </div>
-                    <a href="#" class="block w-full bg-blue-600 hover:bg-blue-700 text-white text-center py-3 rounded-lg transition-all duration-200 font-semibold hover:shadow-lg">
+                    <a href="{% url 'catalog:product_detail' product.slug %}" class="block w-full bg-blue-600 hover:bg-blue-700 text-white text-center py-3 rounded-lg transition-all duration-200 font-semibold hover:shadow-lg">
                         View Details
                     </a>
                 </div>
