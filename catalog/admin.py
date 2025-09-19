@@ -1,6 +1,8 @@
 from django.contrib import admin
+from django.contrib.auth.models import User
 from django.utils.html import format_html
-from .models import Category
+from django.utils.safestring import mark_safe
+from .models import Category, Product
 
 
 @admin.register(Category)
@@ -79,3 +81,113 @@ class CategoryAdmin(admin.ModelAdmin):
         updated = queryset.update(is_active=False)
         self.message_user(request, f'{updated} categories were successfully marked as inactive.')
     make_inactive.short_description = "Mark selected categories as inactive"
+
+
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    """Enhanced admin interface for Product management"""
+    
+    list_display = (
+        'get_image_preview', 'title', 'seller', 'category', 'price', 
+        'status', 'is_featured', 'purchase_count', 'download_count', 'created_at'
+    )
+    list_filter = ('status', 'is_active', 'is_featured', 'category', 'created_at', 'seller')
+    search_fields = ('title', 'description', 'tags', 'seller__username')
+    prepopulated_fields = {'slug': ('title',)}
+    
+    # Organize fields in admin form
+    fieldsets = (
+        ('Basic Information', {
+            'fields': ('title', 'slug', 'description', 'short_description', 'seller', 'category')
+        }),
+        ('Pricing & Status', {
+            'fields': ('price', 'status', 'is_active', 'is_featured')
+        }),
+        ('Files & Images', {
+            'fields': ('main_file', 'preview_file', 'featured_image', 'image_2', 'image_3', 'image_4')
+        }),
+        ('Product Details', {
+            'fields': ('file_format', 'file_size', 'compatibility', 'tags')
+        }),
+        ('SEO & Metadata', {
+            'fields': ('meta_title', 'meta_description'),
+            'classes': ('collapse',)
+        }),
+        ('Statistics', {
+            'fields': ('download_count', 'purchase_count', 'published_at'),
+            'classes': ('collapse',)
+        }),
+    )
+    
+    # Read-only fields
+    readonly_fields = ('download_count', 'purchase_count', 'published_at', 'created_at', 'updated_at')
+    
+    # Inline editing
+    list_editable = ('price', 'status', 'is_featured')
+    
+    # Ordering and pagination
+    ordering = ('-created_at',)
+    list_per_page = 25
+    
+    # Date hierarchy
+    date_hierarchy = 'created_at'
+    
+    def get_image_preview(self, obj):
+        """Show thumbnail preview in admin list"""
+        if obj.featured_image:
+            return mark_safe(f'<img src="{obj.featured_image.url}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;" />')
+        return "No Image"
+    get_image_preview.short_description = 'Preview'
+    
+    def get_queryset(self, request):
+        """Optimize queries for admin list view"""
+        qs = super().get_queryset(request)
+        return qs.select_related('seller', 'seller__profile', 'category')
+    
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        """Customize seller choices based on user role"""
+        if db_field.name == "seller":
+            # Only show users with seller or admin role
+            from accounts.models import Profile
+            seller_profiles = Profile.objects.filter(role__in=['seller', 'admin'])
+            kwargs["queryset"] = User.objects.filter(profile__in=seller_profiles)
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+    
+    def save_model(self, request, obj, form, change):
+        """Auto-assign current user as seller if not set and user can sell"""
+        if not obj.seller_id and request.user.profile.role in ['seller', 'admin']:
+            obj.seller = request.user
+        super().save_model(request, obj, form, change)
+    
+    # Custom actions
+    actions = ['make_active', 'make_inactive', 'make_featured', 'remove_featured', 'approve_products']
+    
+    def make_active(self, request, queryset):
+        """Bulk action to activate products"""
+        updated = queryset.update(status='active', is_active=True)
+        self.message_user(request, f'{updated} products were successfully activated.')
+    make_active.short_description = "Activate selected products"
+    
+    def make_inactive(self, request, queryset):
+        """Bulk action to deactivate products"""
+        updated = queryset.update(is_active=False)
+        self.message_user(request, f'{updated} products were successfully deactivated.')
+    make_inactive.short_description = "Deactivate selected products"
+    
+    def make_featured(self, request, queryset):
+        """Bulk action to feature products"""
+        updated = queryset.update(is_featured=True)
+        self.message_user(request, f'{updated} products were successfully featured.')
+    make_featured.short_description = "Feature selected products"
+    
+    def remove_featured(self, request, queryset):
+        """Bulk action to unfeature products"""
+        updated = queryset.update(is_featured=False)
+        self.message_user(request, f'{updated} products were successfully unfeatured.')
+    remove_featured.short_description = "Remove featured status"
+    
+    def approve_products(self, request, queryset):
+        """Bulk action to approve pending products"""
+        updated = queryset.filter(status='pending').update(status='active')
+        self.message_user(request, f'{updated} products were successfully approved.')
+    approve_products.short_description = "Approve pending products"
