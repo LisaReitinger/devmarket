@@ -9,4 +9,8 @@ urlpatterns = [
     
     # Category listing page  
     path('category/<slug:slug>/', views.category_products, name='category_detail'),
+    
+    # Search functionality
+    path('search/', views.search_products, name='search'),
+    path('quick-search/', views.quick_search, name='quick_search'),
 ]
