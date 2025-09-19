@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ user.username }}'s Profile - DevMarket{% endblock %}
+
+{% block content %}
+<section class="py-12 bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-6">
+        <div class="max-w-4xl mx-auto">
+            <!-- Profile Header -->
+            <div class="bg-white rounded-2xl shadow-lg p-8 mb-8">
+                <div class="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8">
+                    <!-- Avatar -->
+                    <div class="flex-shrink-0">
+                        {% if profile.avatar %}
+                            <img src="{{ profile.avatar.url }}" alt="{{ user.username }}" class="w-24 h-24 rounded-full object-cover border-4 border-blue-100">
+                        {% else %}
+                            <div class="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center border-4 border-blue-200">
+                                <span class="text-3xl font-bold text-blue-600">{{ user.first_name|first|upper }}{{ user.last_name|first|upper }}</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- User Info -->
+                    <div class="flex-1 text-center md:text-left">
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">
+                            {{ user.first_name }} {{ user.last_name }}
+                        </h1>
+                        <p class="text-xl text-gray-600 mb-4">@{{ user.username }}</p>
+                        
+                        <!-- Role Badge -->
+                        <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold mb-4
+                            {% if profile.is_seller %}bg-green-100 text-green-800
+                            {% elif profile.is_admin %}bg-purple-100 text-purple-800
+                            {% else %}bg-blue-100 text-blue-800{% endif %}">
+                            {% if profile.is_seller %}
+                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+                                </svg>
+                                Seller
+                            {% elif profile.is_admin %}
+                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clip-rule="evenodd"/>
+                                </svg>
+                                Administrator
+                            {% else %}
+                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                                </svg>
+                                Buyer
+                            {% endif %}
+                        </div>
+                        
+                        {% if profile.bio %}
+                            <p class="text-gray-600 leading-relaxed">{{ profile.bio }}</p>
+                        {% endif %}
+                        
+                        <!-- Join Date -->
+                        <p class="text-sm text-gray-500 mt-4">
+                            Member since {{ user.date_joined|date:"F Y" }}
+                        </p>
+                    </div>
+                    
+                    <!-- Edit Button -->
+                    <div class="flex-shrink-0">
+                        <a href="{% url 'accounts:profile_edit' %}" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors">
+                            Edit Profile
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Sections -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- My Products (for sellers) -->
+                {% if profile.is_seller or profile.is_admin %}
+                <div class="lg:col-span-2">
+                    <div class="bg-white rounded-2xl shadow-lg p-8">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-bold text-gray-900">My Products</h2>
+                            <a href="#" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors">
+                                Add Product
+                            </a>
+                        </div>
+                        
+                        {% if user_products %}
+                            <div class="space-y-4">
+                                {% for product in user_products %}
+                                <div class="flex items-center space-x-4 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                                    <div class="w-16 h-16 bg-gray-200 rounded-lg flex-shrink-0">
+                                        {% if product.featured_image %}
+                                            <img src="{{ product.featured_image.url }}" alt="{{ product.title }}" class="w-full h-full object-cover rounded-lg">
+                                        {% else %}
+                                            <div class="w-full h-full bg-blue-100 rounded-lg flex items-center justify-center">
+                                                <svg class="w-6 h-6 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"/>
+                                                </svg>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <h3 class="text-lg font-semibold text-gray-900 truncate">{{ product.title }}</h3>
+                                        <p class="text-sm text-gray-500">{{ product.category.name }} • ${{ product.price }}</p>
+                                        <p class="text-xs text-gray-400">{{ product.download_count }} downloads • {{ product.purchase_count }} sales</p>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="px-2 py-1 text-xs font-semibold rounded-full
+                                            {% if product.status == 'active' %}bg-green-100 text-green-800
+                                            {% elif product.status == 'pending' %}bg-yellow-100 text-yellow-800
+                                            {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                            {{ product.get_status_display }}
+                                        </span>
+                                        <a href="{% url 'catalog:product_detail' product.slug %}" class="text-blue-600 hover:text-blue-700">
+                                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+                                                <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="text-center py-8">
+                                <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+                                </svg>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">No products yet</h3>
+                                <p class="text-gray-600 mb-4">Start sharing your digital creations with the world!</p>
+                                <a href="#" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors">
+                                    Upload Your First Product
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Account Stats -->
+                <div class="{% if not profile.is_seller and not profile.is_admin %}lg:col-span-3{% endif %}">
+                    <div class="bg-white rounded-2xl shadow-lg p-8">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6">Account Overview</h2>
+                        
+                        <div class="space-y-4">
+                            <!-- Email -->
+                            <div class="flex justify-between items-center py-3 border-b border-gray-100">
+                                <span class="text-gray-600">Email</span>
+                                <span class="font-semibold text-gray-900">{{ user.email }}</span>
+                            </div>
+                            
+                            <!-- Role -->
+                            <div class="flex justify-between items-center py-3 border-b border-gray-100">
+                                <span class="text-gray-600">Role</span>
+                                <span class="font-semibold text-gray-900">{{ profile.get_role_display }}</span>
+                            </div>
+                            
+                            <!-- Join Date -->
+                            <div class="flex justify-between items-center py-3 border-b border-gray-100">
+                                <span class="text-gray-600">Member Since</span>
+                                <span class="font-semibold text-gray-900">{{ user.date_joined|date:"M d, Y" }}</span>
+                            </div>
+                            
+                            {% if profile.is_seller or profile.is_admin %}
+                            <!-- Products Count -->
+                            <div class="flex justify-between items-center py-3 border-b border-gray-100">
+                                <span class="text-gray-600">Products</span>
+                                <span class="font-semibold text-gray-900">{{ user.products.count }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Quick Actions -->
+                        <div class="mt-8 pt-6 border-t border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+                            <div class="space-y-2">
+                                <a href="{% url 'accounts:profile_edit' %}" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                                    Edit Profile
+                                </a>
+                                <a href="#" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                                    Change Password
+                                </a>
+                                {% if profile.is_seller or profile.is_admin %}
+                                <a href="#" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                                    Seller Dashboard
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

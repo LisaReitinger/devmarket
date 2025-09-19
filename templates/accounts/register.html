@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Sign Up - DevMarket{% endblock %}
+
+{% block content %}
+<section class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-lg w-full space-y-8">
+        <!-- Header -->
+        <div class="text-center">
+            <a href="{% url 'pages:home' %}" class="text-3xl font-bold text-blue-600 mb-8 block">
+                DevMarket
+            </a>
+            <h2 class="text-3xl font-bold text-gray-900 mb-2">
+                Create your account
+            </h2>
+            <p class="text-gray-600">
+                Join DevMarket and start buying or selling digital products
+            </p>
+        </div>
+
+        <!-- Registration Form -->
+        <div class="bg-white py-8 px-6 shadow-xl rounded-2xl">
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+                
+                <!-- Name Fields -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="{{ form.first_name.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                            First Name
+                        </label>
+                        {{ form.first_name }}
+                        {% if form.first_name.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.first_name.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <label for="{{ form.last_name.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                            Last Name
+                        </label>
+                        {{ form.last_name }}
+                        {% if form.last_name.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.last_name.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Username Field -->
+                <div>
+                    <label for="{{ form.username.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                        Username
+                    </label>
+                    {{ form.username }}
+                    {% if form.username.help_text %}
+                        <p class="mt-1 text-xs text-gray-500">{{ form.username.help_text }}</p>
+                    {% endif %}
+                    {% if form.username.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.username.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Email Field -->
+                <div>
+                    <label for="{{ form.email.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                        Email Address
+                    </label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.email.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Role Field -->
+                <div>
+                    <label for="{{ form.role.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                        I want to
+                    </label>
+                    {{ form.role }}
+                    {% if form.role.help_text %}
+                        <p class="mt-1 text-xs text-gray-500">{{ form.role.help_text }}</p>
+                    {% endif %}
+                    {% if form.role.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.role.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Password Fields -->
+                <div>
+                    <label for="{{ form.password1.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                        Password
+                    </label>
+                    {{ form.password1 }}
+                    {% if form.password1.help_text %}
+                        <p class="mt-1 text-xs text-gray-500">{{ form.password1.help_text }}</p>
+                    {% endif %}
+                    {% if form.password1.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.password1.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.password2.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                        Confirm Password
+                    </label>
+                    {{ form.password2 }}
+                    {% if form.password2.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.password2.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Terms and Conditions -->
+                <div class="flex items-center">
+                    <input 
+                        id="terms" 
+                        name="terms" 
+                        type="checkbox" 
+                        required
+                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    >
+                    <label for="terms" class="ml-2 block text-sm text-gray-700">
+                        I agree to the 
+                        <a href="#" class="text-blue-600 hover:text-blue-500">Terms of Service</a> 
+                        and 
+                        <a href="#" class="text-blue-600 hover:text-blue-500">Privacy Policy</a>
+                    </label>
+                </div>
+
+                <!-- Submit Button -->
+                <div>
+                    <button 
+                        type="submit" 
+                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
+                    >
+                        Create Account
+                    </button>
+                </div>
+
+                <!-- Login Link -->
+                <div class="text-center pt-4 border-t border-gray-200">
+                    <p class="text-sm text-gray-600">
+                        Already have an account?
+                        <a href="{% url 'accounts:login' %}" class="font-medium text-blue-600 hover:text-blue-500">
+                            Sign in here
+                        </a>
+                    </p>
+                </div>
+            </form>
+        </div>
+
+        <!-- Features -->
+        <div class="text-center">
+            <p class="text-sm text-gray-500 mb-4">Join thousands of creators and buyers</p>
+            <div class="flex justify-center space-x-6 text-xs text-gray-400">
+                <span>✓ Free to join</span>
+                <span>✓ Start selling immediately</span>
+                <span>✓ Secure platform</span>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
