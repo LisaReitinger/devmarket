@@ -53,7 +53,7 @@ INSTALLED_APPS = [
     'catalog.apps.CatalogConfig',
     'orders.apps.OrdersConfig',
     'dashboard.apps.DashboardConfig',
-    'checkout.apps.CheckoutConfig',
+    'cart.apps.CartConfig',
     'marketing.apps.MarketingConfig',
     'pages.apps.PagesConfig',
 ]
@@ -188,3 +188,9 @@ MESSAGE_TAGS = {
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Stripe Configuration
+STRIPE_PUBLISHABLE_KEY = env('STRIPE_PUBLISHABLE_KEY', default='')
+STRIPE_SECRET_KEY = env('STRIPE_SECRET_KEY', default='')
+STRIPE_WEBHOOK_SECRET = env('STRIPE_WEBHOOK_SECRET', default='')
+STRIPE_CURRENCY = 'usd'  # Default currency

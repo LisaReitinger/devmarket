@@ -25,6 +25,8 @@ urlpatterns = [
     path('', include('catalog.urls')), # Include catalog app URLs
     path('accounts/', include('accounts.urls')), # Include accounts app URLs
     path('dashboard/', include('dashboard.urls')), # Include dashboard app URLs
+    path('cart/', include('cart.urls')), # Include cart app URLs
+    path('checkout/', include('checkout.urls')), # Include checkout app URLs
 ]
 
 # Serve media files in development

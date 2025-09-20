@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}Payment Successful - DevMarket{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="container mx-auto px-4 max-w-3xl">
+        <!-- Success Message -->
+        <div class="bg-white rounded-lg shadow-sm p-8 text-center">
+            <!-- Success Icon -->
+            <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-6">
+                <svg class="h-8 w-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+            </div>
+
+            <h1 class="text-3xl font-bold text-gray-900 mb-4">Payment Successful!</h1>
+            <p class="text-lg text-gray-600 mb-8">
+                Thank you for your purchase! Your order has been processed successfully.
+            </p>
+
+            <!-- Order Details -->
+            <div class="bg-gray-50 rounded-lg p-6 mb-8">
+                <h2 class="text-xl font-semibold text-gray-900 mb-4">Order Details</h2>
+                <div class="text-left space-y-2">
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Order ID:</span>
+                        <span class="font-mono text-sm">{{ order.id }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Total Amount:</span>
+                        <span class="font-bold">${{ order.total_amount }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Items:</span>
+                        <span>{{ order.get_total_items }} item{{ order.get_total_items|pluralize }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Date:</span>
+                        <span>{{ order.completed_at|date:"F j, Y" }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Purchased Items -->
+            <div class="bg-gray-50 rounded-lg p-6 mb-8">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Your Digital Products</h3>
+                <div class="space-y-4">
+                    {% for item in order.items.all %}
+                    <div class="flex items-center justify-between bg-white rounded-lg p-4">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                                <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                            </div>
+                            <div class="text-left">
+                                <h4 class="font-medium text-gray-900">{{ item.product_title }}</h4>
+                                <p class="text-sm text-gray-500">Digital Download</p>
+                            </div>
+                        </div>
+                        {% if item.download_url %}
+                        <a href="{{ item.download_url }}" 
+                           class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                           download>
+                            Download
+                        </a>
+                        {% else %}
+                        <span class="text-gray-400 text-sm">File not available</span>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="{% url 'pages:home' %}" 
+                   class="btn-secondary px-6 py-3">
+                    Continue Shopping
+                </a>
+                <a href="{% url 'accounts:profile' %}" 
+                   class="btn-primary px-6 py-3">
+                    View My Purchases
+                </a>
+            </div>
+
+            <!-- Support Info -->
+            <div class="mt-8 pt-6 border-t border-gray-200">
+                <p class="text-sm text-gray-500">
+                    Need help? Contact our support team or check your email for the receipt.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

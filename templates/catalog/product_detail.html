@@ -123,11 +123,38 @@
                     {% endif %}
                 </div>
 
-                <!-- Buy Button -->
+                <!-- Purchase Actions -->
                 <div class="mb-8">
-                    <button class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-lg text-lg transition-all duration-200 shadow-lg hover:shadow-xl">
-                        Buy Now - ${{ product.price }}
-                    </button>
+                    {% if user.is_authenticated %}
+                        <div class="space-y-3">
+                            <!-- Add to Cart Button -->
+                            <form method="post" action="{% url 'cart:add_to_cart' product.slug %}">
+                                {% csrf_token %}
+                                <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-8 rounded-lg text-lg transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center">
+                                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6H19"></path>
+                                    </svg>
+                                    Add to Cart - ${{ product.price }}
+                                </button>
+                            </form>
+                            <!-- Buy Now Button -->
+                            <form method="post" action="{% url 'checkout:buy_now' product.slug %}">
+                                {% csrf_token %}
+                                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-lg text-lg transition-all duration-200 shadow-lg hover:shadow-xl">
+                                    Buy Now - ${{ product.price }}
+                                </button>
+                            </form>
+                        </div>
+                    {% else %}
+                        <!-- Login Required -->
+                        <div class="text-center">
+                            <p class="text-gray-600 mb-4">Please login to purchase this product</p>
+                            <a href="{% url 'accounts:login' %}?next={% url 'catalog:product_detail' product.slug %}" 
+                               class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-lg text-lg transition-all duration-200 shadow-lg hover:shadow-xl">
+                                Login to Buy - ${{ product.price }}
+                            </a>
+                        </div>
+                    {% endif %}
                     <p class="text-sm text-gray-500 mt-2 text-center">Instant download after purchase</p>
                 </div>
 

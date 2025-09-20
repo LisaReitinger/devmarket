@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+{% block title %}Checkout - DevMarket{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="container mx-auto px-4 max-w-4xl">
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900">Checkout</h1>
+            <p class="text-gray-600 mt-2">Review your order and complete your purchase</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Order Summary -->
+            <div class="bg-white rounded-lg shadow-sm p-6">
+                <h2 class="text-xl font-semibold text-gray-900 mb-6">Order Summary</h2>
+                
+                <div class="space-y-4">
+                    {% for item in cart_items %}
+                    <div class="flex items-center space-x-4 pb-4 border-b border-gray-200">
+                        <!-- Product Image -->
+                        <div class="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
+                            {% if item.product.featured_image %}
+                                <img src="{{ item.product.featured_image.url }}" 
+                                     alt="{{ item.product.title }}"
+                                     class="w-full h-full object-cover">
+                            {% else %}
+                                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                            {% endif %}
+                        </div>
+
+                        <!-- Product Info -->
+                        <div class="flex-1">
+                            <h3 class="font-medium text-gray-900">{{ item.product.title }}</h3>
+                            <p class="text-sm text-gray-500">{{ item.product.category.name }}</p>
+                            <p class="text-sm text-gray-500">Digital Download</p>
+                        </div>
+
+                        <!-- Price -->
+                        <div class="text-lg font-bold text-gray-900">${{ item.price }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Total -->
+                <div class="mt-6 pt-6 border-t border-gray-200">
+                    <div class="flex items-center justify-between text-lg font-bold text-gray-900">
+                        <span>Total</span>
+                        <span>${{ cart.total_price }}</span>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-1">{{ cart.total_items }} item{{ cart.total_items|pluralize }}</p>
+                </div>
+            </div>
+
+            <!-- Payment Section -->
+            <div class="bg-white rounded-lg shadow-sm p-6">
+                <h2 class="text-xl font-semibold text-gray-900 mb-6">Payment Information</h2>
+                
+                <!-- Stripe Payment Info -->
+                <div class="mb-6">
+                    <div class="flex items-center space-x-2 mb-4">
+                        <svg class="w-8 h-8 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.872 4.56 3.147 3.757 4.992 3.757 7.218c0 4.039 2.467 5.76 6.476 7.219 2.585.92 3.445 1.574 3.445 2.583 0 .98-.84 1.545-2.354 1.545-1.875 0-4.965-.921-6.99-2.109l-.9 5.555C5.175 22.99 8.385 24 11.714 24c2.641 0 4.843-.624 6.328-1.813 1.664-1.305 2.525-3.236 2.525-5.732 0-4.128-2.524-5.851-6.594-7.305h.003z"/>
+                        </svg>
+                        <span class="text-gray-600">Secure payment with Stripe</span>
+                    </div>
+                    <p class="text-sm text-gray-500 mb-4">
+                        Your payment information is secure and encrypted. 
+                        You will be redirected to Stripe's secure checkout page.
+                    </p>
+                </div>
+
+                <!-- Checkout Button -->
+                <button id="checkout-button" 
+                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-lg text-lg transition-all duration-200 shadow-lg hover:shadow-xl">
+                    <span id="button-text">Complete Purchase - ${{ cart.total_price }}</span>
+                    <span id="loading" class="hidden">
+                        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Processing...
+                    </span>
+                </button>
+
+                <!-- Security Info -->
+                <div class="mt-6 text-center">
+                    <div class="flex items-center justify-center space-x-4 text-sm text-gray-500">
+                        <div class="flex items-center">
+                            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            SSL Encrypted
+                        </div>
+                        <div class="flex items-center">
+                            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            Secure Payment
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Return to Cart -->
+                <div class="mt-6 text-center">
+                    <a href="{% url 'cart:cart_view' %}" 
+                       class="text-gray-600 hover:text-gray-800 text-sm">
+                        ← Return to cart
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const checkoutButton = document.getElementById('checkout-button');
+    const buttonText = document.getElementById('button-text');
+    const loading = document.getElementById('loading');
+
+    checkoutButton.addEventListener('click', function() {
+        // Show loading state
+        buttonText.classList.add('hidden');
+        loading.classList.remove('hidden');
+        checkoutButton.disabled = true;
+
+        // Create checkout session
+        fetch('{% url "checkout:create_session" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.checkout_url) {
+                window.location.href = data.checkout_url;
+            } else {
+                throw new Error(data.error || 'Failed to create checkout session');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('There was an error processing your request. Please try again.');
+            
+            // Reset button state
+            buttonText.classList.remove('hidden');
+            loading.classList.add('hidden');
+            checkoutButton.disabled = false;
+        });
+    });
+});
+</script>
+{% endblock %}
